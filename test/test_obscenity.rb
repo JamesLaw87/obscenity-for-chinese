@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'helper'
 
 class TestObscenity < Test::Unit::TestCase
@@ -33,7 +34,7 @@ class TestObscenity < Test::Unit::TestCase
   context "#profane?" do
     should "validate the profanity of the given content" do
       assert Obscenity.profane?('Yo, check that ass out')
-      assert !Obscenity.profane?('Hello world')
+      assert !Obscenity.profane?('大家好')
     end
   end
 
@@ -41,7 +42,7 @@ class TestObscenity < Test::Unit::TestCase
   context "#sanitize" do
     should "sanitize the given content" do
       assert_equal "Yo, check that $@!#% out", Obscenity.sanitize('Yo, check that ass out')
-      assert_equal "Hello world", Obscenity.sanitize('Hello world')
+      assert_equal "大家好", Obscenity.sanitize('大家好')
     end
   end
 
@@ -49,7 +50,7 @@ class TestObscenity < Test::Unit::TestCase
   context "#offensive" do
     should "return the offensive words for the given content" do
       assert_equal ['ass', 'biatch'], Obscenity.offensive('Yo, check that ass biatch')
-      assert_equal [], Obscenity.offensive('Hello world')
+      assert_equal [], Obscenity.offensive('大家好')
     end
   end
 
@@ -58,11 +59,9 @@ class TestObscenity < Test::Unit::TestCase
     should "sanitize the given content based on the given replacement" do
       assert_equal "Yo, check that $@!#% out", Obscenity.replacement(:garbled).sanitize('Yo, check that ass out')
       assert_equal "Yo, check that $@!#% out", Obscenity.replacement(:default).sanitize('Yo, check that ass out')
-      assert_equal "Yo, check that *ss out", Obscenity.replacement(:vowels).sanitize('Yo, check that ass out')
-      assert_equal "Yo, check that *h*t out", Obscenity.replacement(:nonconsonants).sanitize('Yo, check that 5hit out')
       assert_equal "Yo, check that *** out", Obscenity.replacement(:stars).sanitize('Yo, check that ass out')
       assert_equal "Yo, check that [censored] out", Obscenity.replacement("[censored]").sanitize('Yo, check that ass out')
-      assert_equal "Hello world", Obscenity.sanitize('Hello world')
+      assert_equal "大家好", Obscenity.sanitize('大家好')
     end
   end
 

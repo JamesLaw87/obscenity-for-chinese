@@ -178,22 +178,6 @@ class TestRack < Test::Unit::TestCase
         assert_equal '***', request_params['foo']
       end
 
-      should "sanitize the title using the :vowels replacement" do
-        app = middleware(sanitize: { replacement: :vowels })
-        status, headers, body = app.call(mock_env(get(foo: 'ass')))
-        assert_success_response status, headers, body
-        request_params = get_response_params
-        assert_equal '*ss', request_params['foo']
-      end
-
-      should "sanitize the title using the :nonconsonants replacement" do
-        app = middleware(sanitize: { replacement: :nonconsonants })
-        status, headers, body = app.call(mock_env(get(foo: '5hit')))
-        assert_success_response status, headers, body
-        request_params = get_response_params
-        assert_equal '*h*t', request_params['foo']
-      end
-
       should "sanitize the title using a custom replacement" do
         app = middleware(sanitize: { replacement: "[censored]" })
         status, headers, body = app.call(mock_env(get(foo: 'text with ass')))

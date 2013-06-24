@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'helper'
 
 class TestBase < Test::Unit::TestCase
@@ -15,7 +16,7 @@ class TestBase < Test::Unit::TestCase
       setup { Obscenity::Base.blacklist = :default }
       should "use the default content file when no config is found" do
         assert Obscenity::Base.blacklist.is_a?(Array)
-        assert_equal 565, Obscenity::Base.blacklist.size
+        assert_equal 567, Obscenity::Base.blacklist.size
       end
     end
     context "with custom config" do
@@ -52,7 +53,7 @@ class TestBase < Test::Unit::TestCase
         should "validate the profanity of a word based on the default list" do
           assert Obscenity::Base.profane?('ass')
           assert Obscenity::Base.profane?('biatch')
-          assert !Obscenity::Base.profane?('hello')
+          assert !Obscenity::Base.profane?('你好')
         end
       end
       context "with custom blacklist config" do
@@ -73,7 +74,7 @@ class TestBase < Test::Unit::TestCase
         should "validate the profanity of a word based on the default list" do
           assert Obscenity::Base.profane?('ass')
           assert !Obscenity::Base.profane?('biatch')
-          assert !Obscenity::Base.profane?('hello')
+          assert !Obscenity::Base.profane?('你好')
         end
       end
       context "with custom blacklist/whitelist config" do
@@ -98,8 +99,8 @@ class TestBase < Test::Unit::TestCase
           Obscenity::Base.whitelist = :default
         }
         should "sanitize and return a clean text based on the default list" do
-          assert_equal "Yo $@!#%, sup", Obscenity::Base.sanitize('Yo assclown, sup')
-          assert_equal "Hello world", Obscenity::Base.sanitize('Hello world')
+          assert_equal "你这个$@!#%", Obscenity::Base.sanitize('你这个混蛋')
+          assert_equal "大家好", Obscenity::Base.sanitize('大家好')
         end
       end
       context "with custom blacklist config" do
@@ -117,7 +118,7 @@ class TestBase < Test::Unit::TestCase
           Obscenity::Base.whitelist = ['biatch']
         }
         should "sanitize and return a clean text based on the default blacklist and custom whitelist" do
-          assert_equal "Yo $@!#%, sup", Obscenity::Base.sanitize('Yo assclown, sup')
+          assert_equal "你这个$@!#%", Obscenity::Base.sanitize('你这个混蛋')
           assert_equal "Yo biatch, sup", Obscenity::Base.sanitize('Yo biatch, sup')
         end
       end
@@ -142,12 +143,10 @@ class TestBase < Test::Unit::TestCase
           Obscenity::Base.whitelist = :default
         }
         should "sanitize and return a clean text based on the default list" do
-          assert_equal "Yo ********, sup", Obscenity::Base.replacement(:stars).sanitize('Yo assclown, sup')
-          assert_equal "Yo $@!#%, sup", Obscenity::Base.replacement(:garbled).sanitize('Yo assclown, sup')
-          assert_equal "Yo *sscl*wn, sup", Obscenity::Base.replacement(:vowels).sanitize('Yo assclown, sup')
-          assert_equal "Oh, *h*t!", Obscenity::Base.replacement(:nonconsonants).sanitize('Oh, 5hit!')
-          assert_equal "Yo [censored], sup", Obscenity::Base.replacement('[censored]').sanitize('Yo assclown, sup')
-          assert_equal "Hello World", Obscenity::Base.replacement(:default).sanitize('Hello World')
+          assert_equal "你这个**", Obscenity::Base.replacement(:stars).sanitize('你这个混蛋')
+          assert_equal "你这个$@!#%", Obscenity::Base.replacement(:garbled).sanitize('你这个混蛋')
+          assert_equal "你这个[censored]", Obscenity::Base.replacement('[censored]').sanitize('你这个混蛋')
+          assert_equal "大家好", Obscenity::Base.replacement(:default).sanitize('大家好')
         end
       end
       context "with custom blacklist config" do
@@ -155,8 +154,6 @@ class TestBase < Test::Unit::TestCase
         should "sanitize and return a clean text based on a custom list" do
           assert_equal "Yo ****, sup", Obscenity::Base.replacement(:stars).sanitize('Yo word, sup')
           assert_equal "Yo $@!#%, sup", Obscenity::Base.replacement(:garbled).sanitize('Yo word, sup')
-          assert_equal "Yo w*rd, sup", Obscenity::Base.replacement(:vowels).sanitize('Yo word, sup')
-          assert_equal "Yo w*rd, sup", Obscenity::Base.replacement(:nonconsonants).sanitize('Yo w0rd, sup')
           assert_equal "Yo [censored], sup", Obscenity::Base.replacement('[censored]').sanitize('Yo word, sup')
           assert_equal "Hello World", Obscenity::Base.replacement(:default).sanitize('Hello World')
         end
@@ -169,11 +166,9 @@ class TestBase < Test::Unit::TestCase
           Obscenity::Base.whitelist = ['biatch']
         }
         should "sanitize and return a clean text based on the default blacklist and custom whitelist" do
-          assert_equal "Yo ********, sup", Obscenity::Base.replacement(:stars).sanitize('Yo assclown, sup')
-          assert_equal "Yo $@!#%, sup", Obscenity::Base.replacement(:garbled).sanitize('Yo assclown, sup')
-          assert_equal "Yo *sscl*wn, sup", Obscenity::Base.replacement(:vowels).sanitize('Yo assclown, sup')
-          assert_equal "What an *r**", Obscenity::Base.replacement(:nonconsonants).sanitize('What an ar5e')
-          assert_equal "Yo [censored], sup", Obscenity::Base.replacement('[censored]').sanitize('Yo assclown, sup')
+          assert_equal "你这个**", Obscenity::Base.replacement(:stars).sanitize('你这个混蛋')
+          assert_equal "你这个$@!#%", Obscenity::Base.replacement(:garbled).sanitize('你这个混蛋')
+          assert_equal "你这个[censored]", Obscenity::Base.replacement('[censored]').sanitize('你这个混蛋')
           assert_equal "Yo biatch, sup", Obscenity::Base.replacement(:default).sanitize('Yo biatch, sup')
         end
       end
@@ -185,11 +180,9 @@ class TestBase < Test::Unit::TestCase
         should "validate the profanity of a word based on the custom list" do
           assert_equal "Yo *****, sup", Obscenity::Base.replacement(:stars).sanitize('Yo clown, sup')
           assert_equal "Yo $@!#%, sup", Obscenity::Base.replacement(:garbled).sanitize('Yo clown, sup')
-          assert_equal "Yo cl*wn, sup", Obscenity::Base.replacement(:vowels).sanitize('Yo clown, sup')
-          assert_equal "Yo cl*wn, sup", Obscenity::Base.replacement(:nonconsonants).sanitize('Yo clown, sup')
           assert_equal "Yo [censored], sup", Obscenity::Base.replacement('[censored]').sanitize('Yo clown, sup')
           assert_equal "Yo biatch, sup", Obscenity::Base.replacement(:default).sanitize('Yo biatch, sup')
-          assert_equal "Yo assclown, sup", Obscenity::Base.replacement(:default).sanitize('Yo assclown, sup')
+          assert_equal "你这个混蛋", Obscenity::Base.replacement(:default).sanitize('你这个混蛋')
         end
       end
     end
@@ -203,11 +196,11 @@ class TestBase < Test::Unit::TestCase
           Obscenity::Base.whitelist = :default
         }
         should "return an array with the offensive words based on the default list" do
-          assert_equal ['assclown'], Obscenity::Base.offensive('Yo assclown, sup')
-          assert_equal [], Obscenity::Base.offensive('Hello world')
+          assert_equal ['混蛋'], Obscenity::Base.offensive('你这个混蛋！')
+          assert_equal [], Obscenity::Base.offensive('大家好')
         end
       end
-      context "with custom blacklist config" do
+    context "with custom blacklist config" do
         setup { Obscenity::Base.blacklist = ['yo', 'word'] }
         should "return an array with the offensive words based on a custom list" do
           assert_equal ['yo', 'word'], Obscenity::Base.offensive('Yo word, sup')
@@ -222,7 +215,7 @@ class TestBase < Test::Unit::TestCase
           Obscenity::Base.whitelist = ['biatch']
         }
         should "return an array with the offensive words based on the default blacklist and custom whitelist" do
-          assert_equal ['assclown'], Obscenity::Base.offensive('Yo assclown, sup')
+          assert_equal ['混蛋'], Obscenity::Base.offensive('你这个混蛋！')
           assert_equal [], Obscenity::Base.offensive('Yo biatch, sup')
         end
       end
@@ -242,8 +235,6 @@ class TestBase < Test::Unit::TestCase
   context "#replace" do
     should "replace the given word by the given replacement method" do
       [
-        [:vowels,        {original: "Oh 5hit", clean: "Oh 5h*t"}],
-        [:nonconsonants, {original: "Oh 5hit", clean: "Oh *h*t"}],
         [:stars,         {original: "Oh 5hit", clean: "Oh ****"}],
         [:garbled,       {original: "Oh 5hit", clean: "Oh $@!#%"}],
         [:default,       {original: "Oh 5hit", clean: "Oh $@!#%"}],
