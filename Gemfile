@@ -8,4 +8,5 @@ group :development do
   gem "activemodel", "~> 3.0"
   gem "rack"
   gem "rake"
+  gem 'coveralls', require: false
 end

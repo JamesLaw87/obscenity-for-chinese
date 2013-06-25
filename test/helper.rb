@@ -1,7 +1,10 @@
 require 'rubygems'
 require 'bundler'
+require 'coveralls'
+
 begin
   Bundler.setup(:default, :development)
+  Coveralls.wear!
 rescue Bundler::BundlerError => e
   $stderr.puts e.message
   $stderr.puts "Run `bundle install` to install missing gems"
