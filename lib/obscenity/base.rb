@@ -29,7 +29,7 @@ module Obscenity
       def sanitize(text)
 #         return(text) unless text.to_s.size >= 3
         blacklist.each do |foul|
-          text.gsub!(/#{foul}/i, replace(foul)) unless whitelist.include?(foul)
+          text.gsub!(/#{foul}/i, replace(foul)) unless (whitelist.include?(foul) || whitelist.include?(text))
         end
         @scoped_replacement = nil
         text
